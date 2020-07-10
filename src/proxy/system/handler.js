@@ -102,6 +102,42 @@ module.exports = class Handler {
 
   /**
    * @static
+   * Handles XML
+   * @param {String} data
+   * @param {String} _direction
+   * @param {Net.Socket} client
+   * @param {Net.Socket} proxy
+   * @returns {String}
+   */
+  static handleXML(data, _direction, client, proxy) {
+    let action
+
+    // This is so epic!
+    if (_direction === Direction.IN) {
+      action = data.split(`='`)[2].split(`'`)[0]
+    } else {
+      action = data.split('="')[2].split('"')[0]
+    }
+
+    if (this.xmlHandlers[action]) {
+      let { direction, callback } = this.xmlHandlers[action]
+
+      if (direction === _direction || direction === Direction.BOTH) {
+        // Decides whether to pass direction or not, and how
+        if (direction === Direction.BOTH) {
+          direction = _direction // Reform origin
+          data = callback(data, direction, client, proxy)
+        } else {
+          data = callback(data, client, proxy)
+        }
+      }
+    }
+
+    return data + '\0'
+  }
+
+  /**
+   * @static
    * Handles outgoing data from the proxy to the client
    * @param {String} data
    * @param {Net.Socket} client
@@ -113,23 +149,10 @@ module.exports = class Handler {
 
     return new Promise((resolve) => {
       if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
-        const action = data.split('="')[2].split('"')[0]
-
-        if (this.xmlHandlers[action]) {
-          let { direction, callback } = this.xmlHandlers[action]
-
-          if (direction === Direction.OUT || direction === Direction.BOTH) {
-            if (direction === Direction.BOTH) {
-              direction = Direction.OUT
-              data = callback(data, direction, client, proxy)
-            } else {
-              data = callback(data, client, proxy)
-            }
-          }
-        }
+        resolve(this.handleXML(data, Direction.OUT, client, proxy))
+      } else {
+        resolve(data + '\0')
       }
-
-      resolve(data + '\0')
     })
   }
 
@@ -146,23 +169,10 @@ module.exports = class Handler {
 
     return new Promise((resolve) => {
       if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
-        const action = data.split(`='`)[2].split(`'`)[0]
-
-        if (this.xmlHandlers[action]) {
-          let { direction, callback } = this.xmlHandlers[action]
-
-          if (direction === Direction.IN || direction === Direction.BOTH) {
-            if (direction === Direction.BOTH) {
-              direction = Direction.IN
-              data = callback(data, direction, client, proxy)
-            } else {
-              data = callback(data, client, proxy)
-            }
-          }
-        }
+        resolve(this.handleXML(data, Direction.IN, client, proxy))
+      } else {
+        resolve(data + '\0')
       }
-
-      resolve(data + '\0')
     })
   }
 }
