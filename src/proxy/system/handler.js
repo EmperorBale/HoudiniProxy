@@ -104,24 +104,24 @@ module.exports = class Handler {
    * @static
    * Handles XML data
    * @param {String} data
-   * @param {String} _direction
+   * @param {String} origin
    * @param {Net.Socket} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  static handleXML(data, _direction, client, proxy) {
+  static handleXML(data, origin, client, proxy) {
     // This is so epic!
-    const action = _direction === Direction.IN
+    const action = origin === Direction.IN
       ? data.split(`='`)[2].split(`'`)[0]
       : data.split('="')[2].split('"')[0]
 
     if (this.xmlHandlers[action]) {
       let { direction, callback } = this.xmlHandlers[action]
 
-      if (direction === _direction || direction === Direction.BOTH) {
+      if (direction === origin || direction === Direction.BOTH) {
         // Decides whether to pass direction or not, and how
         if (direction === Direction.BOTH) {
-          direction = _direction // Reform origin
+          direction = origin // Reform origin
           data = callback(data, direction, client, proxy)
         } else {
           data = callback(data, client, proxy)
@@ -136,12 +136,12 @@ module.exports = class Handler {
    * @static
    * Handles XT data
    * @param {String} data
-   * @param {String} _direction
+   * @param {String} origin
    * @param {Net.Socket} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  static handleXT(data, _direction, client, proxy) {
+  static handleXT(data, origin, client, proxy) {
     return data
   }
 
