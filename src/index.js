@@ -19,7 +19,7 @@ const type = process.argv[2];
   const serverIP = await (await lookup('play.newcp.net')).address
 
   if (localIP !== '127.0.0.1' || serverIP === '127.0.0.1') {
-    logger.error('Please verify that your loopbacks are correct.')
+    return logger.error('Please verify that your loopbacks are correct.')
   }
 
   let xml = await fetch('https://play.newcp.net/servers.xml')
