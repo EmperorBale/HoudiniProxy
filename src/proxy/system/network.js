@@ -12,8 +12,10 @@ module.exports = class Network {
    * @param {Net.Socket} client
    */
   static sendFromProxy(data, client) {
-    logger.outgoing(data)
-    client.write(data)
+    if (client.writable) {
+      logger.outgoing(data)
+      client.write(data)
+    }
   }
 
   /**
@@ -23,7 +25,9 @@ module.exports = class Network {
    * @param {Net.Socket} proxy
    */
   static sendFromClient(data, proxy) {
-    logger.incoming(data)
-    proxy.write(data)
+    if (proxy.writable) {
+      logger.incoming(data)
+      proxy.write(data)
+    }
   }
 }
