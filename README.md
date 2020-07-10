@@ -11,11 +11,15 @@ This is a proxy written for the flash game called Club Penguin, but specifically
 # Setup
 
 - [Current Node.js](https://nodejs.org/en/download/current/)
-- `127.0.0.1 newcp.net` in hosts
+- `127.0.0.1 newcp.net` in hosts (Open Notepad as **admin** and go to `C:\Windows\System32\drivers\etc\hosts`)
 - `npm install` for dependencies
 - `npm start login` to start the login proxy
 - `npm start world` to start the world proxies
 - Use [Play page](https://play.newcp.net/en/)
+
+# Testing
+
+If you want to mess around with Club Penguin using this proxy, I recommend to use Windows Sandbox to test outcome on a different perspective when using 2 clients.
 
 # Copyright
 
