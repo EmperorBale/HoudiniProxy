@@ -4,10 +4,20 @@ const lookup = require('util').promisify(require('dns').lookup)
 const fetch = require('node-fetch')
 
 const ProxyLogin = require('./proxy/login')
-const ProxyServer = require('./proxy/server');
+const ProxyWorld = require('./proxy/world')
+
+const type = process.argv[2];
 
 (async () => {
   global.logger = require('./utils/logger')
+
+  if (!type) {
+    return logger.error('You must provide a proxy type.')
+  }
+
+  if (type !== 'login' && type !== 'world') {
+    return logger.error('You must provide a valid proxy type.')
+  }
 
   const localIP = await (await lookup('newcp.net')).address
   const serverIP = await (await lookup('play.newcp.net')).address
@@ -30,6 +40,13 @@ const ProxyServer = require('./proxy/server');
     servers: [] // The servers to proxy
   }
 
+  // Set process title to the proxy type
+  process.title = type
+
+  if (type === 'login') {
+    return new ProxyLogin(config)
+  }
+
   xml = xml.split('id="')
   xml.shift() // We don't care about this anymore
 
@@ -45,14 +62,12 @@ const ProxyServer = require('./proxy/server');
     }
   }
 
-  new ProxyLogin(config)
-
   for (let i = 0; i < config.servers.length; i++) {
     const serverConfig = config.servers[i]
 
     // We'll be able to use custom commands in-game, so fuck off with safe servers
     if (!serverConfig.safe) {
-      new ProxyServer(config.localIP, config.serverIP, serverConfig)
+      new ProxyWorld(config.localIP, config.serverIP, serverConfig)
     }
   }
 })();

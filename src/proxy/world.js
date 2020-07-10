@@ -6,7 +6,7 @@ const { createServer, Socket } = require('net')
  * @exports
  * @class
  */
-module.exports = class ProxyServer {
+module.exports = class ProxyWorld {
   /**
    * @constructor
    * @param {String} localIP
@@ -41,5 +41,24 @@ module.exports = class ProxyServer {
      * @type {Number}
      */
     this.port = port
+    /**
+     * Stop the proxy server gracefully
+     */
+    process.on('SIGTERM', () => this.stop())
+    process.on('SIGINT', () => this.stop())
+  }
+
+  /**
+   * Start the proxy server
+   */
+  start() {
+
+  }
+
+  /**
+   * Stop the proxy server
+   */
+  stop() {
+    process.exit(0)
   }
 }

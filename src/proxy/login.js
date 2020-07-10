@@ -29,5 +29,24 @@ module.exports = class ProxyLogin {
      * @type {Number}
      */
     this.loginPort = loginPort
+    /**
+     * Stop the proxy server gracefully
+     */
+    process.on('SIGTERM', () => this.stop())
+    process.on('SIGINT', () => this.stop())
+  }
+
+  /**
+   * Start the proxy server
+   */
+  start() {
+
+  }
+
+  /**
+   * Stop the proxy server
+   */
+  stop() {
+    process.exit(0)
   }
 }
