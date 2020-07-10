@@ -6,7 +6,8 @@ const fetch = require('node-fetch')
 const ProxyLogin = require('./proxy/login')
 const ProxyWorld = require('./proxy/world')
 
-const type = process.argv[2];
+const type = process.argv[2]
+const target = require('../config/');
 
 (async () => {
   global.logger = require('./utils/logger')
@@ -15,14 +16,14 @@ const type = process.argv[2];
     return logger.error('You must provide a valid proxy type.')
   }
 
-  const localIP = await (await lookup('newcp.net')).address
-  const serverIP = await (await lookup('play.newcp.net')).address
+  const localIP = await (await lookup(target.dns)).address
+  const serverIP = await (await lookup(target.play)).address
 
   if (localIP !== '127.0.0.1' || serverIP === '127.0.0.1') {
     return logger.error('Please verify that your loopbacks are correct.')
   }
 
-  let xml = await fetch('https://play.newcp.net/servers.xml')
+  let xml = await fetch(target.servers)
   xml = await xml.text()
 
   const config = {

@@ -1,7 +1,7 @@
 {
-  "name": "newcpproxy",
+  "name": "houdiniproxy",
   "version": "1.0.0",
-  "description": "A very evil Node.js TCP proxy for the CPPS called NewCP.",
+  "description": "A very evil Node.js TCP proxy for Houdini CPPS.",
   "scripts": {
     "start": "node ./src/"
   },
