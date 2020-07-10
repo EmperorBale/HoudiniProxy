@@ -187,7 +187,9 @@ module.exports = class Handler {
       }
     }
 
-    return ['', 'xt', data.join('%')].join('%')
+    return Array.isArray(data)
+      ? ['', 'xt', data.join('%')].join('%')
+      : data
   }
 
   /**
