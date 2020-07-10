@@ -13,8 +13,10 @@ module.exports = class Handler {
    * @returns {Promise}
    */
   static handleFromProxy(data, client) {
+    data = data.split('\0')[0]
+
     return new Promise((resolve) => {
-      resolve(data)
+      resolve(data + '\0')
     })
   }
 
@@ -26,8 +28,10 @@ module.exports = class Handler {
    * @returns {Promise}
    */
   static handleFromClient(data, proxy) {
+    data = data.split('\0')[0]
+
     return new Promise((resolve) => {
-      resolve(data)
+      resolve(data + '\0')
     })
   }
 }
