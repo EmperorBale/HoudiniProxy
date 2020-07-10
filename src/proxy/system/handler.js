@@ -110,14 +110,10 @@ module.exports = class Handler {
    * @returns {String}
    */
   static handleXML(data, _direction, client, proxy) {
-    let action
-
     // This is so epic!
-    if (_direction === Direction.IN) {
-      action = data.split(`='`)[2].split(`'`)[0]
-    } else {
-      action = data.split('="')[2].split('"')[0]
-    }
+    const action = _direction === Direction.IN
+      ? data.split(`='`)[2].split(`'`)[0]
+      : data.split('="')[2].split('"')[0]
 
     if (this.xmlHandlers[action]) {
       let { direction, callback } = this.xmlHandlers[action]
