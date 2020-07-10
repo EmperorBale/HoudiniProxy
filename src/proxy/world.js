@@ -41,6 +41,11 @@ module.exports = class ProxyWorld {
      * @type {Number}
      */
     this.port = port
+
+    /**
+     * Start the proxy server
+     */
+    this.start()
     /**
      * Stop the proxy server gracefully
      */
@@ -49,10 +54,28 @@ module.exports = class ProxyWorld {
   }
 
   /**
+   * Returns a fancy world string
+   * @returns {String}
+   */
+  get worldStr() {
+    return `@${this.id}|${this.name}`
+  }
+
+  /**
+   * Returns a fancy address string
+   * @returns {String}
+   */
+  get addr() {
+    return `${this.localIP}:${this.port}`
+  }
+
+  /**
    * Start the proxy server
    */
   start() {
+    createServer((socket) => {
 
+    }).listen(this.port, this.localIP, () => logger.info(`World${this.worldStr} proxy server listening on ${this.addr}.`))
   }
 
   /**

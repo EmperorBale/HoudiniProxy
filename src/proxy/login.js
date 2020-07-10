@@ -29,6 +29,11 @@ module.exports = class ProxyLogin {
      * @type {Number}
      */
     this.loginPort = loginPort
+
+    /**
+     * Start the proxy server
+     */
+    this.start()
     /**
      * Stop the proxy server gracefully
      */
@@ -37,10 +42,20 @@ module.exports = class ProxyLogin {
   }
 
   /**
+   * Returns a fancy address string
+   * @returns {String}
+   */
+  get addr() {
+    return `${this.localIP}:${this.loginPort}`
+  }
+
+  /**
    * Start the proxy server
    */
   start() {
+    createServer((socket) => {
 
+    }).listen(this.loginPort, this.localIP, () => logger.info(`Login proxy server listening on ${this.addr}.`))
   }
 
   /**
