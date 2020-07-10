@@ -4,6 +4,10 @@ A very *evil* Node.js TCP proxy for the CPPS called NewCP. This project should a
 
 **Currently a work in progress.**
 
+# What is it?
+
+This is a proxy written for the flash game called Club Penguin, but specifically for NewCP. What it does is intercept incoming and outgoing data. During this process, we can modify data between the client and the server, allowing us to perform unexpected actions. For now, it's not quite sure what the possibilities are, as this has never been done before.
+
 # Setup
 
 - [Current Node.js](https://nodejs.org/en/download/current/)
