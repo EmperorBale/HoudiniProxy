@@ -102,7 +102,7 @@ module.exports = class Handler {
 
   /**
    * @static
-   * Handles XML
+   * Handles XML data
    * @param {String} data
    * @param {String} _direction
    * @param {Net.Socket} client
