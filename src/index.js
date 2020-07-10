@@ -11,11 +11,7 @@ const type = process.argv[2];
 (async () => {
   global.logger = require('./utils/logger')
 
-  if (!type) {
-    return logger.error('You must provide a proxy type.')
-  }
-
-  if (type !== 'login' && type !== 'world') {
+  if (!type || type !== 'login' && type !== 'world') {
     return logger.error('You must provide a valid proxy type.')
   }
 
