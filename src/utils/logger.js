@@ -27,7 +27,7 @@ const { debug } = createLogger({
     new transports.DailyRotateFile({
       level: 'debug',
       maxFiles: '1d',
-      filename: `./logs/debug@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/debug@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
@@ -48,7 +48,7 @@ const { info } = createLogger({
     new transports.DailyRotateFile({
       level: 'info',
       maxFiles: '2d',
-      filename: `./logs/info@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/info@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
@@ -69,7 +69,7 @@ const { warn } = createLogger({
     new transports.DailyRotateFile({
       level: 'warn',
       maxFiles: '3d',
-      filename: `./logs/warn@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/warn@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
@@ -90,7 +90,7 @@ const { error } = createLogger({
     new transports.DailyRotateFile({
       level: 'error',
       maxFiles: '4d',
-      filename: `./logs/error@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/error@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
@@ -111,7 +111,7 @@ const { incoming } = createLogger({
     new transports.DailyRotateFile({
       level: 'incoming',
       maxFiles: '1d',
-      filename: `./logs/incoming@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/incoming@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
@@ -132,7 +132,7 @@ const { outgoing } = createLogger({
     new transports.DailyRotateFile({
       level: 'outgoing',
       maxFiles: '1d',
-      filename: `./logs/outgoing@%DATE%.log`,
+      filename: `./logs/${process.argv[2]}/outgoing@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
     }),
