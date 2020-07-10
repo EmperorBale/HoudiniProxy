@@ -12,7 +12,7 @@ const target = require('../config/');
 (async () => {
   global.logger = require('./utils/logger')
 
-  if (!type || type !== 'login' && type !== 'world') {
+  if (!serverType || serverType !== 'login' && serverType !== 'world') {
     return logger.error('You must provide a valid proxy type.')
   }
 
@@ -34,9 +34,9 @@ const target = require('../config/');
   }
 
   // Set process title to the proxy type
-  process.title = type
+  process.title = serverType
 
-  if (type === 'login') {
+  if (serverType === 'login') {
     return new ProxyLogin(config)
   }
 
