@@ -6,7 +6,7 @@ const fetch = require('node-fetch')
 const ProxyLogin = require('./proxy/login')
 const ProxyWorld = require('./proxy/world')
 
-const type = process.argv[2]
+global.serverType = process.argv[2]
 const target = require('../config/');
 
 (async () => {
