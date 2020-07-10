@@ -23,7 +23,7 @@ const fetch = require('node-fetch');
 
   const config = {
     localIP,
-    serverIP, // The magic
+    serverIP, // The magic IP
     loginPort: parseInt(xml.split('port="')[1].split('"')[0]),
     servers: [] // The servers to proxy
   }
