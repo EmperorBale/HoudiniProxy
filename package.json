@@ -1,0 +1,15 @@
+{
+  "name": "newcpproxy",
+  "version": "1.0.0",
+  "description": "A very evil Node.js TCP proxy for the CPPS called NewCP.",
+  "scripts": {
+    "start": "node ./src/"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
+  },
+  "author": "Zaseth",
+  "license": "MIT"
+}
