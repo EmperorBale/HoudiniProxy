@@ -1,10 +1,81 @@
 'use strict'
 
+const readdir = require('util').promisify(require('fs').readdir)
+const Direction = require('../enums/Direction')
+
 /**
  * @exports
  * @class
  */
 module.exports = class Handler {
+  /**
+   * @static
+   * The XML handlers
+   * @type {Object}
+   */
+  static xmlHandlers = {
+    rndK: {
+      functionName: 'handleRandomKey',
+      direction: Direction.BOTH
+    },
+    login: {
+      functionName: 'handleLogin',
+      direction: Direction.IN
+    }
+  }
+  /**
+   * @static
+   * @private
+   * The XML handlers
+   * @type {Object}
+   */
+  static #xmlHandlers = {
+    handleRandomKey: 'rndK',
+    handleLogin: 'login'
+  }
+
+  /**
+   * @static
+   * Loads the XML handlers
+   * @returns {Promise}
+   */
+  static loadXML() {
+    return new Promise((resolve, reject) => {
+      const dir = `${process.cwd()}/src/proxy/handlers`
+
+      readdir(dir).then((handlers) => {
+        for (let i = 0; i < handlers.length; i++) {
+          const [fileName, fileType] = handlers[i].split('.')
+
+          if (fileType === 'js') {
+            const handler = require(`${dir}/${fileName}`)
+            const functionNames = Object.keys(handler)
+
+            for (let i = 0; i < functionNames.length; i++) {
+              const functionName = functionNames[i]
+
+              if (this.#xmlHandlers[functionName]) {
+                const action = this.#xmlHandlers[functionName]
+
+                if (this.xmlHandlers[action]) {
+                  const xml = this.xmlHandlers[action]
+
+                  if (xml.functionName === functionName) {
+                    xml.callback = handler[functionName]
+                  } else {
+                    throw 'XML function name does not match.'
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        resolve()
+      }).catch((err) => reject(err))
+    })
+  }
+
   /**
    * @static
    * Returns whether the data is XML or not
@@ -30,12 +101,30 @@ module.exports = class Handler {
    * Handles outgoing data from the proxy to the client
    * @param {String} data
    * @param {Net.Socket} client
+   * @param {Net.Proxy} proxy
    * @returns {Promise}
    */
-  static handleFromProxy(data, client) {
+  static handleFromProxy(data, client, proxy) {
     data = data.split('\0')[0]
 
     return new Promise((resolve) => {
+      if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
+        const action = data.split('="')[2].split('"')[0]
+
+        if (this.xmlHandlers[action]) {
+          let { direction, callback } = this.xmlHandlers[action]
+
+          if (direction === Direction.OUT || direction === Direction.BOTH) {
+            if (direction === Direction.BOTH) {
+              direction = Direction.OUT
+              data = callback(data, direction, client, proxy)
+            } else {
+              data = callback(data, client, proxy)
+            }
+          }
+        }
+      }
+
       resolve(data + '\0')
     })
   }
@@ -45,12 +134,30 @@ module.exports = class Handler {
    * Handles incoming data from the client to the proxy
    * @param {String} data
    * @param {Net.Socket} proxy
+   * @param {Net.Socket} client
    * @returns {Promise}
    */
-  static handleFromClient(data, proxy) {
+  static handleFromClient(data, proxy, client) {
     data = data.split('\0')[0]
 
     return new Promise((resolve) => {
+      if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
+        const action = data.split(`='`)[2].split(`'`)[0]
+
+        if (this.xmlHandlers[action]) {
+          let { direction, callback } = this.xmlHandlers[action]
+
+          if (direction === Direction.IN || direction === Direction.BOTH) {
+            if (direction === Direction.BOTH) {
+              direction = Direction.IN
+              data = callback(data, direction, client, proxy)
+            } else {
+              data = callback(data, client, proxy)
+            }
+          }
+        }
+      }
+
       resolve(data + '\0')
     })
   }

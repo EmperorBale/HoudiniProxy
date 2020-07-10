@@ -55,7 +55,9 @@ module.exports = class ProxyLogin {
     /**
      * Start the proxy server
      */
-    this.start()
+    this.handler.loadXML().then(() => {
+      this.start()
+    }).catch((err) => logger.error(err))
     /**
      * Stop the proxy server gracefully
      */
@@ -93,7 +95,7 @@ module.exports = class ProxyLogin {
 
       // Proxy=>Client events
       this.proxy.on('data', (data) => {
-        this.handler.handleFromProxy(data, this.client).then((modData) => {
+        this.handler.handleFromProxy(data, this.client, this.proxy).then((modData) => {
           this.network.sendFromProxy(modData, this.client)
         })
       })
@@ -102,7 +104,7 @@ module.exports = class ProxyLogin {
 
       // Client=>Proxy events
       this.client.on('data', (data) => {
-        this.handler.handleFromClient(data, this.proxy).then((modData) => {
+        this.handler.handleFromClient(data, this.proxy, this.client).then((modData) => {
           this.network.sendFromClient(modData, this.proxy)
         })
       })
