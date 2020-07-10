@@ -1,8 +1,10 @@
 'use strict'
 
 const lookup = require('util').promisify(require('dns').lookup)
-const { Socket } = require('net')
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
+
+const ProxyLogin = require('./proxy/login')
+const ProxyServer = require('./proxy/server');
 
 (async () => {
   global.logger = require('./utils/logger')
@@ -43,19 +45,14 @@ const fetch = require('node-fetch');
     }
   }
 
-  // We test our target
-  const socket = new Socket()
-  let start
+  new ProxyLogin(config)
 
-  socket.connect(config.loginPort, config.serverIP, () => {
-    logger.debug('Login server connected, sending probe...')
+  for (let i = 0; i < config.servers.length; i++) {
+    const serverConfig = config.servers[i]
 
-    start = Date.now()
-    socket.write('<policy-file-request/>\0')
-  })
-
-  socket.on('data', () => {
-    logger.debug(`Successfully tested login server with a latency of ${Date.now() - start}ms.`)
-    socket.destroy()
-  })
+    // We'll be able to use custom commands in-game, so fuck off with safe servers
+    if (!serverConfig.safe) {
+      new ProxyServer(config.localIP, config.serverIP, serverConfig)
+    }
+  }
 })();
