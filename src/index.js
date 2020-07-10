@@ -1,6 +1,7 @@
 'use strict'
 
 const lookup = require('util').promisify(require('dns').lookup)
+const { Socket } = require('net')
 const fetch = require('node-fetch');
 
 (async () => {
@@ -41,4 +42,20 @@ const fetch = require('node-fetch');
       port: parseInt(serverConfig.split('port="')[1].split('"')[0])
     }
   }
+
+  // We test our target
+  const socket = new Socket()
+  let start
+
+  socket.connect(config.loginPort, config.serverIP, () => {
+    logger.debug('Login server connected, sending probe...')
+
+    start = Date.now()
+    socket.write('<policy-file-request/>\0')
+  })
+
+  socket.on('data', () => {
+    logger.debug(`Successfully tested login server with a latency of ${Date.now() - start}ms.`)
+    socket.destroy()
+  })
 })();
