@@ -1,6 +1,6 @@
 # NewCPProxy
 
-A very *evil* Node.js TCP proxy for the CPPS called NewCP.
+A very *evil* Node.js TCP proxy for the CPPS called NewCP. This project should also work on other CPPS' with slight modification.
 
 **Currently a work in progress.**
 
