@@ -36,10 +36,12 @@ module.exports = {
    */
   handleXMLLogin: (data, client, proxy) => {
     const username = data.split('<nick><![CDATA[')[1].split(']]></nick>')[0]
-    const password = data.split('<pword><![CDATA[')[1].split(']]></pword>')[0]
-    const token = data.split('<token><![CDATA[')[1].split(']]></token>')[0]
 
-    logger.debug(`Logging in as ${username} with hash ${password} and token ${token}.`)
+    if (serverType === 'login') {
+      logger.debug(`${username} is logging in to login server.`)
+    } else {
+      logger.debug(`${username} is logging in to world server.`)
+    }
 
     return data
   }
