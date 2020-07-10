@@ -58,7 +58,7 @@ const target = require('../config/');
   for (let i = 0; i < config.servers.length; i++) {
     const serverConfig = config.servers[i]
 
-    // We'll be able to use custom commands in-game, so fuck off with safe servers
+    // We want to be able to use custom commands in-game, so fuck off with safe servers
     if (!serverConfig.safe) {
       new ProxyWorld(config.localIP, config.serverIP, serverConfig)
     }
