@@ -63,9 +63,13 @@ module.exports = class Handler {
                   if (xml.functionName === functionName) {
                     xml.callback = handler[functionName]
                   } else {
-                    throw 'XML function name does not match.'
+                    throw `Unmatching XML function name: '${functionName}'-'${xml.functionName}'.`
                   }
+                } else {
+                  throw `Unknown XML action: '${action}'.`
                 }
+              } else {
+                throw `Unknown XML function name: '${functionName}'.`
               }
             }
           }
