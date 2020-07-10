@@ -9,6 +9,7 @@ A very *evil* Node.js TCP proxy for the CPPS called NewCP.
 - [Current Node.js](https://nodejs.org/en/download/current/)
 - `127.0.0.1 newcp.net` in hosts
 - `npm install` for dependencies
+- `npm start` to start the proxy
 - Use [Play page](https://play.newcp.net/en/)
 
 # Copyright
