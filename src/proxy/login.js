@@ -116,9 +116,17 @@ module.exports = class ProxyLogin {
    * @param {String} type
    */
   close(type) {
-    type === 'proxy' ? this.proxy.destroy() : this.client.destroy()
+    if (type === 'proxy' && this.proxy !== undefined) {
+      this.proxy.destroy()
+      this.proxy = undefined
 
-    logger.info(`The ${type} socket has been disconnected.`)
+      logger.info('The proxy socket has been disconnected.')
+    } else if (type === 'client' && this.client !== undefined) {
+      this.client.destroy()
+      this.client = undefined
+
+      logger.info('The client socket has been disconnected.')
+    }
   }
 
   /**
