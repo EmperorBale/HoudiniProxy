@@ -18,12 +18,8 @@ const type = process.argv[2];
   const localIP = await (await lookup('newcp.net')).address
   const serverIP = await (await lookup('play.newcp.net')).address
 
-  if (localIP !== '127.0.0.1') {
-    logger.error('You must add the loopback of newcp.net.')
-  }
-
-  if (serverIP === '127.0.0.1') {
-    logger.error('You must remove the loopback of play.newcp.net.')
+  if (localIP !== '127.0.0.1' || serverIP === '127.0.0.1') {
+    logger.error('Please verify that your loopbacks are correct.')
   }
 
   let xml = await fetch('https://play.newcp.net/servers.xml')
