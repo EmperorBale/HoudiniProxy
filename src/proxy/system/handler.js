@@ -129,7 +129,20 @@ module.exports = class Handler {
       }
     }
 
-    return data + '\0'
+    return data
+  }
+
+  /**
+   * @static
+   * Handles XT data
+   * @param {String} data
+   * @param {String} _direction
+   * @param {Net.Socket} client
+   * @param {Net.Socket} proxy
+   * @returns {String}
+   */
+  static handleXT(data, _direction, client, proxy) {
+    return data
   }
 
   /**
@@ -146,8 +159,10 @@ module.exports = class Handler {
     return new Promise((resolve) => {
       if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
         resolve(this.handleXML(data, Direction.OUT, client, proxy))
+      } else if (this.isXT(data)) {
+        resolve(this.handleXT(data, Direction.OUT, client, proxy))
       } else {
-        resolve(data + '\0')
+        resolve(data)
       }
     })
   }
@@ -166,8 +181,10 @@ module.exports = class Handler {
     return new Promise((resolve) => {
       if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
         resolve(this.handleXML(data, Direction.IN, client, proxy))
+      } else if (this.isXT(data)) {
+        resolve(this.handleXT(data, Direction.IN, client, proxy))
       } else {
-        resolve(data + '\0')
+        resolve(data)
       }
     })
   }
