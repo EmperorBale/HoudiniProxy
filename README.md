@@ -15,7 +15,7 @@ This is a proxy written for the flash game called Club Penguin, but specifically
 - `npm install` for dependencies
 - `npm start login` to start the login proxy
 - `npm start world` to start the world proxies
-- Use [Play page](https://play.newcp.net/en/)
+- Use [Play page](https://play.newcp.net/en/#/login)
 
 # Testing
 
