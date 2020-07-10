@@ -34,7 +34,7 @@ module.exports = {
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  handleLogin: (data, client, proxy) => {
+  handleXMLLogin: (data, client, proxy) => {
     const username = data.split('<nick><![CDATA[')[1].split(']]></nick>')[0]
     const password = data.split('<pword><![CDATA[')[1].split(']]></pword>')[0]
     const token = data.split('<token><![CDATA[')[1].split(']]></token>')[0]

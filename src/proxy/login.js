@@ -55,9 +55,7 @@ module.exports = class ProxyLogin {
     /**
      * Start the proxy server
      */
-    this.handler.loadXML().then(() => {
-      this.start()
-    }).catch((err) => logger.error(err))
+    this.start()
     /**
      * Stop the proxy server gracefully
      */
@@ -76,7 +74,21 @@ module.exports = class ProxyLogin {
   /**
    * Start the proxy server
    */
-  start() {
+  async start() {
+    try {
+      await this.handler.load()
+    } catch (err) {
+      logger.error(err.message)
+      process.exit(1)
+    } finally {
+      this.listen()
+    }
+  }
+
+  /**
+   * Listens to the proxy config
+   */
+  listen() {
     createServer((socket) => {
       socket.setNoDelay(true)
       socket.setEncoding('utf8')

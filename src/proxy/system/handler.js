@@ -19,7 +19,7 @@ module.exports = class Handler {
       direction: Direction.BOTH
     },
     login: {
-      functionName: 'handleLogin',
+      functionName: 'handleXMLLogin',
       direction: Direction.IN
     }
   }
@@ -31,53 +31,81 @@ module.exports = class Handler {
    */
   static #xmlHandlers = {
     handleRandomKey: 'rndK',
-    handleLogin: 'login'
+    handleXMLLogin: 'login'
+  }
+  /**
+   * @static
+   * The XT handlers
+   * @type {Object}
+   */
+  static xtHandlers = {
+    l: {
+      functionName: 'handleXTLogin',
+      direction: Direction.OUT
+    }
+  }
+  /**
+   * @static
+   * @private
+   * The XT handlers
+   * @type {Object}
+   */
+  static #xtHandlers = {
+    handleXTLogin: 'l'
   }
 
   /**
    * @static
-   * Loads the XML handlers
-   * @returns {Promise}
+   * Loads the handlers
    */
-  static loadXML() {
-    return new Promise((resolve, reject) => {
-      const dir = `${process.cwd()}/src/proxy/handlers`
+  static async load() {
+    const dir = `${process.cwd()}/src/proxy/handlers`
+    const handlers = await readdir(dir)
 
-      readdir(dir).then((handlers) => {
-        for (let i = 0; i < handlers.length; i++) {
-          const [fileName, fileType] = handlers[i].split('.')
+    for (let i = 0; i < handlers.length; i++) {
+      const [fileName, fileType] = handlers[i].split('.')
 
-          if (fileType === 'js') {
-            const handler = require(`${dir}/${fileName}`)
-            const functionNames = Object.keys(handler)
+      if (fileType === 'js') {
+        const handler = require(`${dir}/${fileName}`)
+        const functionNames = Object.keys(handler)
 
-            for (let i = 0; i < functionNames.length; i++) {
-              const functionName = functionNames[i]
+        for (let i = 0; i < functionNames.length; i++) {
+          const functionName = functionNames[i]
 
-              if (this.#xmlHandlers[functionName]) {
-                const action = this.#xmlHandlers[functionName]
+          if (this.#xmlHandlers[functionName]) {
+            const action = this.#xmlHandlers[functionName]
 
-                if (this.xmlHandlers[action]) {
-                  const xml = this.xmlHandlers[action]
+            if (this.xmlHandlers[action]) {
+              const xml = this.xmlHandlers[action]
 
-                  if (xml.functionName === functionName) {
-                    xml.callback = handler[functionName]
-                  } else {
-                    throw `Unmatching XML function name: '${functionName}'-'${xml.functionName}'.`
-                  }
-                } else {
-                  throw `Unknown XML action: '${action}'.`
-                }
+              if (xml.functionName === functionName) {
+                xml.callback = handler[functionName]
               } else {
-                throw `Unknown XML function name: '${functionName}'.`
+                throw new Error(`Unmatching XML function name: '${functionName}'-'${xml.functionName}'.`)
               }
+            } else {
+              throw new Error(`Unknown XML action: '${action}'.`)
             }
+          } else if (this.#xtHandlers[functionName]) {
+            const subject = this.#xtHandlers[functionName]
+
+            if (this.xtHandlers[subject]) {
+              const xt = this.xtHandlers[subject]
+
+              if (xt.functionName === functionName) {
+                xt.callback = handler[functionName]
+              } else {
+                throw new Error(`Unmatching XT function name: '${functionName}'-'${xt.functionName}'.`)
+              }
+            } else {
+              throw new Error(`Unknown XT subject: '${subject}'.`)
+            }
+          } else {
+            throw new Error(`Unknown function name: '${functionName}'.`)
           }
         }
-
-        resolve()
-      }).catch((err) => reject(err))
-    })
+      }
+    }
   }
 
   /**
@@ -140,7 +168,26 @@ module.exports = class Handler {
    * @returns {String}
    */
   static handleXT(data, origin, client, proxy) {
-    return data
+    if (origin === Direction.IN) {
+
+    } else if (origin === Direction.OUT) {
+      const dataArr = data.split('%').splice(2)
+      const [subject] = dataArr
+
+      if (this.xtHandlers[subject]) {
+        const { direction, callback } = this.xtHandlers[subject]
+
+        if (direction === origin || direction === Direction.BOTH) {
+          if (direction === Direction.BOTH) {
+            data = callback(dataArr, origin, client, proxy)
+          } else {
+            data = callback(dataArr, client, proxy)
+          }
+        }
+      }
+    }
+
+    return ['', 'xt', data.join('%')].join('%')
   }
 
   /**
