@@ -116,13 +116,11 @@ module.exports = class Handler {
       : data.split('="')[2].split('"')[0]
 
     if (this.xmlHandlers[action]) {
-      let { direction, callback } = this.xmlHandlers[action]
+      const { direction, callback } = this.xmlHandlers[action]
 
       if (direction === origin || direction === Direction.BOTH) {
-        // Decides whether to pass direction or not, and how
         if (direction === Direction.BOTH) {
-          direction = origin // Reform origin
-          data = callback(data, direction, client, proxy)
+          data = callback(data, origin, client, proxy)
         } else {
           data = callback(data, client, proxy)
         }
