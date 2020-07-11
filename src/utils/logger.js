@@ -1,5 +1,6 @@
 'use strict'
 
+const { keepLogs } = require('../../config/')
 const { createLogger, transports, format, addColors } = require('winston')
 const { combine, colorize, timestamp, json, printf } = format
 
@@ -26,7 +27,7 @@ const { debug } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'debug',
-      maxFiles: '1d',
+      maxFiles: keepLogs.debug,
       filename: `./logs/${process.argv[2]}/debug@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
@@ -47,7 +48,7 @@ const { info } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'info',
-      maxFiles: '2d',
+      maxFiles: keepLogs.info,
       filename: `./logs/${process.argv[2]}/info@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
@@ -68,7 +69,7 @@ const { warn } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'warn',
-      maxFiles: '3d',
+      maxFiles: keepLogs.warn,
       filename: `./logs/${process.argv[2]}/warn@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
@@ -89,7 +90,7 @@ const { error } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'error',
-      maxFiles: '4d',
+      maxFiles: keepLogs.error,
       filename: `./logs/${process.argv[2]}/error@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
@@ -110,7 +111,7 @@ const { incoming } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'incoming',
-      maxFiles: '1d',
+      maxFiles: keepLogs.incoming,
       filename: `./logs/${process.argv[2]}/incoming@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
@@ -131,7 +132,7 @@ const { outgoing } = createLogger({
   transports: [
     new transports.DailyRotateFile({
       level: 'outgoing',
-      maxFiles: '1d',
+      maxFiles: keepLogs.outgoing,
       filename: `./logs/${process.argv[2]}/outgoing@%DATE%.log`,
       datePattern: 'D-M-YYYY',
       format: combine(timestamp({ format: 'HH:mm:ss' }), json())
