@@ -84,11 +84,19 @@ module.exports = class ProxyWorld {
   }
 
   /**
-   * Returns a fancy address string
+   * Returns a fancy local address string
    * @returns {String}
    */
-  get addr() {
+  get localAddr() {
     return `${this.localIP}:${this.port}`
+  }
+
+  /**
+   * Returns a fancy world address string
+   * @returns {String}
+   */
+  get worldAddr() {
+    return `${this.serverIP}:${this.port}`
   }
 
   /**
@@ -122,7 +130,7 @@ module.exports = class ProxyWorld {
         this.proxy.setNoDelay(true)
         this.proxy.setEncoding('utf8')
 
-        Logger.info(`Proxy has connected to ${this.worldStr} world server.`)
+        Logger.info(`Proxy has connected to World${this.worldStr} ${this.worldAddr} server.`)
       })
 
       // Proxy=>Client events
@@ -142,7 +150,7 @@ module.exports = class ProxyWorld {
       })
       this.client.on('close', () => this.close('client'))
       this.client.on('error', () => this.close('client'))
-    }).listen(this.port, this.localIP, () => Logger.info(`World${this.worldStr} proxy server listening on ${this.addr}.`))
+    }).listen(this.port, this.localIP, () => Logger.info(`World${this.worldStr} proxy server listening on ${this.localAddr}.`))
   }
 
   /**
