@@ -11,7 +11,7 @@ module.exports = {
    * @param {Array} data
    * @param {Net.Socket} client
    * @param {Net.Socket} proxy
-   * @returns {String}
+   * @returns {Array}
    */
   handleXTLogin: (dataArr, client, proxy) => {
     return dataArr
