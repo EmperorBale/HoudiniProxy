@@ -2,6 +2,7 @@
 
 const readdir = require('util').promisify(require('fs').readdir)
 const Direction = require('../enums/Direction')
+const ServerType = require('../enums/ServerType')
 
 /**
  * @exports
@@ -42,6 +43,10 @@ module.exports = class Handler {
     l: {
       functionName: 'handleXTLogin',
       direction: Direction.OUT
+    },
+    cipher: {
+      functionName: 'handleCipher',
+      direction: Direction.OUT
     }
   }
   /**
@@ -51,7 +56,8 @@ module.exports = class Handler {
    * @type {Object}
    */
   static #xtHandlers = {
-    handleXTLogin: 'l'
+    handleXTLogin: 'l',
+    handleCipher: 'cipher'
   }
 
   /**
@@ -202,17 +208,34 @@ module.exports = class Handler {
    * @returns {Promise}
    */
   static handleFromProxy(data, client, proxy) {
-    data = data.split('\0')[0]
+    if (serverType === ServerType.WORLD) {
+      data = data.split('\0')
+      data.pop()
 
-    return new Promise((resolve) => {
-      if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
-        resolve(this.handleXML(data, Direction.OUT, client, proxy))
-      } else if (this.isXT(data)) {
-        resolve(this.handleXT(data, Direction.OUT, client, proxy))
-      } else {
-        resolve(data)
-      }
-    })
+      return new Promise((resolve) => {
+        for (let i = 0; i < data.length; i++) {
+          if (this.isXML(data[i]) && data[i].indexOf('<body action=') !== -1) {
+            data[i] = this.handleXML(data[i], Direction.OUT, client, proxy)
+          } else if (this.isXT(data[i])) {
+            data[i] = this.handleXT(data[i], Direction.OUT, client, proxy)
+          }
+        }
+
+        resolve(data.join('\0'))
+      })
+    } else {
+      data = data.split('\0')[0]
+
+      return new Promise((resolve) => {
+        if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
+          resolve(this.handleXML(data, Direction.OUT, client, proxy))
+        } else if (this.isXT(data)) {
+          resolve(this.handleXT(data, Direction.OUT, client, proxy))
+        } else {
+          resolve(data)
+        }
+      })
+    }
   }
 
   /**

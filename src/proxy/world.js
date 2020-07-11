@@ -17,6 +17,17 @@ module.exports = class ProxyWorld {
    */
   constructor(localIP, serverIP, { id, name, port }) {
     /**
+     * The network class
+     * @type {Object}
+     */
+    this.network = require('./system/network')
+    /**
+     * The handler class
+     * @type {Object}
+     */
+    this.handler = require('./system/handler')
+
+    /**
      * The local IP we'll create a server on
      * @type {String}
      */
@@ -41,6 +52,17 @@ module.exports = class ProxyWorld {
      * @type {Number}
      */
     this.port = port
+
+    /**
+     * The client socket
+     * @type {Net.Socket}
+     */
+    this.client = undefined
+    /**
+     * The proxy socket
+     * @type {Net.Socket}
+     */
+    this.proxy = undefined
 
     /**
      * Start the proxy server
@@ -72,16 +94,82 @@ module.exports = class ProxyWorld {
   /**
    * Start the proxy server
    */
-  start() {
-    createServer((socket) => {
+  async start() {
+    try {
+      await this.handler.load()
+    } catch (err) {
+      logger.error(err.message)
+      process.exit(1)
+    } finally {
+      this.listen()
+    }
+  }
 
+  /**
+   * Listens to the proxy config
+   */
+  listen() {
+    createServer((socket) => {
+      socket.setNoDelay(true)
+      socket.setEncoding('utf8')
+
+      logger.info(`Client has connected to ${this.worldStr} proxy server.`)
+
+      this.client = socket
+      this.proxy = new Socket()
+
+      this.proxy.connect(this.port, this.serverIP, () => {
+        this.proxy.setNoDelay(true)
+        this.proxy.setEncoding('utf8')
+
+        logger.info(`Proxy has connected to ${this.worldStr} proxy server.`)
+      })
+
+      // Proxy=>Client events
+      this.proxy.on('data', (data) => {
+        this.handler.handleFromProxy(data, this.client, this.proxy).then((modData) => {
+          this.network.sendFromProxy(modData, this.client)
+        })
+      })
+      this.proxy.on('close', () => this.close('proxy'))
+      this.proxy.on('error', () => this.close('proxy'))
+
+      // Client=>Proxy events
+      this.client.on('data', (data) => {
+        this.handler.handleFromClient(data, this.proxy, this.client).then((modData) => {
+          this.network.sendFromClient(modData, this.proxy)
+        })
+      })
+      this.client.on('close', () => this.close('client'))
+      this.client.on('error', () => this.close('client'))
     }).listen(this.port, this.localIP, () => logger.info(`World${this.worldStr} proxy server listening on ${this.addr}.`))
+  }
+
+  /**
+   * Closes the socket
+   * @param {String} type
+   */
+  close(type) {
+    if (type === 'proxy' && this.proxy !== undefined) {
+      this.proxy.destroy()
+      this.proxy = undefined
+
+      logger.info('The proxy socket has been disconnected.')
+    } else if (type === 'client' && this.client !== undefined) {
+      this.client.destroy()
+      this.client = undefined
+
+      logger.info('The client socket has been disconnected.')
+    }
   }
 
   /**
    * Stop the proxy server
    */
   stop() {
+    this.close('proxy')
+    this.close('client')
+
     process.exit(0)
   }
 }
