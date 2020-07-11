@@ -121,7 +121,7 @@ module.exports = class Handler {
    * @returns {Boolean}
    */
   static isXML(data) {
-    return data.charAt() === '<' && data.charAt(data.length - 1) === '>'
+    return data.charAt() === '<' && data.charAt(data.length - 1) === '>' && data.indexOf('<body action=') !== -1
   }
 
   /**
@@ -234,7 +234,7 @@ module.exports = class Handler {
       return new Promise((resolve) => {
         // TCP loves to append data, this undoes it
         for (let i = 0; i < data.length; i++) {
-          if (this.isXML(data[i]) && data[i].indexOf('<body action=') !== -1) {
+          if (this.isXML(data[i])) {
             data[i] = this.handleXML(data[i], Direction.OUT, client, proxy)
           } else if (this.isXT(data[i])) {
             data[i] = this.handleXT(data[i], Direction.OUT, client, proxy)
@@ -247,7 +247,7 @@ module.exports = class Handler {
       data = data.split('\0')[0]
 
       return new Promise((resolve) => {
-        if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
+        if (this.isXML(data)) {
           resolve(this.handleXML(data, Direction.OUT, client, proxy))
         } else if (this.isXT(data)) {
           resolve(this.handleXT(data, Direction.OUT, client, proxy))
@@ -270,7 +270,7 @@ module.exports = class Handler {
     data = data.split('\0')[0]
 
     return new Promise((resolve) => {
-      if (this.isXML(data) && data.indexOf('<body action=') !== -1) {
+      if (this.isXML(data)) {
         resolve(this.handleXML(data, Direction.IN, client, proxy))
       } else if (this.isXT(data)) {
         resolve(this.handleXT(data, Direction.IN, client, proxy))
