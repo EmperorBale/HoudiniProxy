@@ -122,7 +122,7 @@ module.exports = class ProxyWorld {
         this.proxy.setNoDelay(true)
         this.proxy.setEncoding('utf8')
 
-        Logger.info(`Proxy has connected to ${this.worldStr} proxy server.`)
+        Logger.info(`Proxy has connected to ${this.worldStr} world server.`)
       })
 
       // Proxy=>Client events
