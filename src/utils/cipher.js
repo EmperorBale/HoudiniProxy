@@ -17,6 +17,12 @@ module.exports = class Cipher {
    * @type {String}
    */
   static base = 'qwertyuiopasdfghjklzxcvbnm1234567890%|?><:!&()'
+  /**
+   * @static
+   * The cipher mask
+   * @type {String}
+   */
+  static mask = ''
 
   /**
    * @static

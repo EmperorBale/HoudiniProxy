@@ -136,6 +136,16 @@ module.exports = class Handler {
 
   /**
    * @static
+   * Returns whether the data is encrypted or not
+   * @param {String} data
+   * @returns {Boolean}
+   */
+  static isEncrypted(data) {
+    return serverType === ServerType.WORLD && Cipher.key !== '' && data.substring(0, 4) === Cipher.mask
+  }
+
+  /**
+   * @static
    * Handles XML data
    * @param {String} data
    * @param {String} origin
@@ -175,7 +185,7 @@ module.exports = class Handler {
    */
   static handleXT(data, origin, client, proxy) {
     if (origin === Direction.IN) {
-
+      // Todo
     } else if (origin === Direction.OUT) {
       const dataArr = data.split('%').splice(2)
       const [subject] = dataArr
@@ -197,6 +207,19 @@ module.exports = class Handler {
     return Array.isArray(data)
       ? ['', 'xt', data.join('%')].join('%')
       : data
+  }
+
+  /**
+   * @static
+   * Handles encrypted data
+   * @param {String} data
+   * @param {String} origin
+   * @param {Net.Socket} client
+   * @param {Net.Socket} proxy
+   * @returns {String}
+   */
+  static handleEncryptedData(data, origin, client, proxy) {
+    return data
   }
 
   /**
@@ -254,6 +277,8 @@ module.exports = class Handler {
         resolve(this.handleXML(data, Direction.IN, client, proxy))
       } else if (this.isXT(data)) {
         resolve(this.handleXT(data, Direction.IN, client, proxy))
+      } else if (this.isEncrypted(data)) {
+        resolve(this.handleEncryptedData(data, Direction.IN, client, proxy))
       } else {
         resolve(data)
       }
