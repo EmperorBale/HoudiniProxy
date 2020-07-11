@@ -248,13 +248,12 @@ module.exports = class Handler {
       data = data.split('\0')[0]
 
       return new Promise((resolve) => {
-        switch (data) {
-          case this.isXML(data):
-            resolve(this.handleXML(data, Direction.OUT, client, proxy)); break
-          case this.isXT(data):
-            resolve(this.handleXT(data, Direction.OUT, client, proxy)); break
-          default:
-            resolve(data); break
+        if (this.isXML(data)) {
+          resolve(this.handleXML(data, Direction.OUT, client, proxy))
+        } else if (this.isXT(data)) {
+          resolve(this.handleXT(data, Direction.OUT, client, proxy))
+        } else {
+          resolve(data)
         }
       })
     }
@@ -272,15 +271,14 @@ module.exports = class Handler {
     data = data.split('\0')[0]
 
     return new Promise((resolve) => {
-      switch (data) {
-        case this.isXML(data):
-          resolve(this.handleXML(data, Direction.IN, client, proxy)); break
-        case this.isXT(data):
-          resolve(this.handleXT(data, Direction.IN, client, proxy)); break
-        case this.isEncrypted(data):
-          resolve(this.handleEncryptedData(data, Direction.IN, client, proxy)); break
-        default:
-          resolve(data); break
+      if (this.isXML(data)) {
+        resolve(this.handleXML(data, Direction.IN, client, proxy))
+      } else if (this.isXT(data)) {
+        resolve(this.handleXT(data, Direction.IN, client, proxy))
+      } else if (this.isEncrypted(data)) {
+        resolve(this.handleEncryptedData(data, Direction.IN, client, proxy))
+      } else {
+        resolve(data)
       }
     })
   }
