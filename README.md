@@ -17,7 +17,6 @@ This proxy is specifically in use for NewCP. They use some random shit cipher to
 # Setup
 
 - [Current Node.js](https://nodejs.org/en/download/current/)
-- [New Powershell](https://github.com/PowerShell/PowerShell/releases)
 - Edit `/config/index.js` to your target
 - `127.0.0.1 newcp.net` (example) in hosts (Open Notepad as **admin** and go to `C:\Windows\System32\drivers\etc\hosts`)
 - `npm install` for dependencies
