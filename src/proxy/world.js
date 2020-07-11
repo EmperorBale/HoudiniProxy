@@ -150,12 +150,12 @@ module.exports = class ProxyWorld {
    * @param {String} type
    */
   close(type) {
-    if (type === 'proxy' && this.proxy !== undefined) {
+    if (type === 'proxy' && this.proxy) {
       this.proxy.destroy()
       this.proxy = undefined
 
       Logger.info('The proxy socket has been disconnected.')
-    } else if (type === 'client' && this.client !== undefined) {
+    } else if (type === 'client' && this.client) {
       this.client.destroy()
       this.client = undefined
 
