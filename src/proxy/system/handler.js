@@ -163,11 +163,9 @@ module.exports = class Handler {
       const { direction, callback } = this.xmlHandlers[action]
 
       if (direction === origin || direction === Direction.BOTH) {
-        if (direction === Direction.BOTH) {
-          data = callback(data, origin, client, proxy)
-        } else {
-          data = callback(data, client, proxy)
-        }
+        data = direction === Direction.BOTH
+          ? callback(data, origin, client, proxy)
+          : callback(data, client, proxy)
       }
     }
 
@@ -194,11 +192,9 @@ module.exports = class Handler {
         const { direction, callback } = this.xtHandlers[subject]
 
         if (direction === origin || direction === Direction.BOTH) {
-          if (direction === Direction.BOTH) {
-            data = callback(dataArr, origin, client, proxy)
-          } else {
-            data = callback(dataArr, client, proxy)
-          }
+          data = direction === Direction.BOTH
+            ? callback(dataArr, origin, client, proxy)
+            : callback(dataArr, client, proxy)
         }
       }
     }
