@@ -199,7 +199,7 @@ module.exports = class Handler {
       }
     }
 
-    // Avoids the use of join on strings (non-filtered XT messages)
+    // Avoids the use of join() on strings (non-filtered XT messages)
     return Array.isArray(data)
       ? ['', 'xt', data.join('%')].join('%')
       : data
