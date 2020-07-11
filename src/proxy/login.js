@@ -102,7 +102,7 @@ module.exports = class ProxyLogin {
         this.proxy.setNoDelay(true)
         this.proxy.setEncoding('utf8')
 
-        logger.info(`Proxy has connected to login server.`)
+        logger.info('Proxy has connected to login server.')
       })
 
       // Proxy=>Client events
