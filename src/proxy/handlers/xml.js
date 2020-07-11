@@ -1,6 +1,7 @@
 'use strict'
 
 const Direction = require('../enums/Direction')
+const ServerType = require('../enums/ServerType')
 
 /**
  * @exports
@@ -35,9 +36,11 @@ module.exports = {
    * @returns {String}
    */
   handleXMLLogin: (data, client, proxy) => {
-    const username = data.split('<nick><![CDATA[')[1].split(']]></nick>')[0]
+    if (serverType === ServerType.LOGIN) {
+      const username = data.split('<nick><![CDATA[')[1].split(']]></nick>')[0]
 
-    logger.debug(`${username} is logging in on the ${serverType} server.`)
+      logger.debug(`${username} is logging in.`)
+    }
 
     return data
   }
