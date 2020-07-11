@@ -10,6 +10,10 @@ This is a proxy written for the flash game called Club Penguin, but specifically
 
 For now, I'm not quite sure what the possibilities are, as this has never been done before. This has to be researched.
 
+# Information
+
+This proxy is specifically in use for NewCP. They use some random shit cipher to 'encrypt' client=>server traffic. Also, NewCP uses the AS3 protocol. As I've said before, slight modification is needed to make this work on other CPPS'.
+
 # Setup
 
 - [Current Node.js](https://nodejs.org/en/download/current/)
