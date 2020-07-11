@@ -24,10 +24,6 @@ This proxy is specifically in use for NewCP. They use some random shit cipher to
 - `npm start world` to start the world proxies
 - Use [Play page](https://play.newcp.net/en/#/login) (example)
 
-# Testing
-
-If you want to mess around with a CPPS using this proxy, I recommend to use Windows Sandbox to test outcome on a different perspective when using 2 clients.
-
 # Copyright
 
 We all don't own Club Penguin, neither do I.
