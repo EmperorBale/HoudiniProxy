@@ -13,7 +13,7 @@ module.exports = class Network {
    */
   static sendFromProxy(data, client) {
     if (client && client.writable) {
-      logger.outgoing(data)
+      Logger.outgoing(data)
       client.write(data + '\0')
     }
   }
@@ -26,7 +26,7 @@ module.exports = class Network {
    */
   static sendFromClient(data, proxy) {
     if (proxy && proxy.writable) {
-      logger.incoming(data)
+      Logger.incoming(data)
       proxy.write(data + '\0')
     }
   }

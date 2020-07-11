@@ -16,7 +16,7 @@ module.exports = {
   handleCipher: (dataArr, client, proxy) => {
     Cipher.key = dataArr[2]
 
-    logger.debug(`Cipher key caught: ${Cipher.key}`)
+    Logger.debug(`Cipher key caught: ${Cipher.key}`)
 
     return dataArr
   }

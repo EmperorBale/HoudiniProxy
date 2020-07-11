@@ -78,7 +78,7 @@ module.exports = class ProxyLogin {
     try {
       await this.handler.load()
     } catch (err) {
-      logger.error(err.message)
+      Logger.error(err.message)
       process.exit(1)
     } finally {
       this.listen()
@@ -93,7 +93,7 @@ module.exports = class ProxyLogin {
       socket.setNoDelay(true)
       socket.setEncoding('utf8')
 
-      logger.info('Client has connected to login proxy server.')
+      Logger.info('Client has connected to login proxy server.')
 
       this.client = socket
       this.proxy = new Socket()
@@ -102,7 +102,7 @@ module.exports = class ProxyLogin {
         this.proxy.setNoDelay(true)
         this.proxy.setEncoding('utf8')
 
-        logger.info('Proxy has connected to login server.')
+        Logger.info('Proxy has connected to login server.')
       })
 
       // Proxy=>Client events
@@ -122,7 +122,7 @@ module.exports = class ProxyLogin {
       })
       this.client.on('close', () => this.close('client'))
       this.client.on('error', () => this.close('client'))
-    }).listen(this.loginPort, this.localIP, () => logger.info(`Login proxy server listening on ${this.addr}.`))
+    }).listen(this.loginPort, this.localIP, () => Logger.info(`Login proxy server listening on ${this.addr}.`))
   }
 
   /**
@@ -134,12 +134,12 @@ module.exports = class ProxyLogin {
       this.proxy.destroy()
       this.proxy = undefined
 
-      logger.info('The proxy socket has been disconnected.')
+      Logger.info('The proxy socket has been disconnected.')
     } else if (type === 'client' && this.client !== undefined) {
       this.client.destroy()
       this.client = undefined
 
-      logger.info('The client socket has been disconnected.')
+      Logger.info('The client socket has been disconnected.')
     }
   }
 

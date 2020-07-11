@@ -10,18 +10,18 @@ global.serverType = process.argv[2]
 const target = require('../config/');
 
 (async () => {
-  global.logger = require('./utils/logger')
+  global.Logger = require('./utils/logger')
   global.Cipher = require('./utils/cipher')
 
   if (!serverType || serverType !== 'login' && serverType !== 'world') {
-    return logger.error('You must provide a valid proxy type.')
+    return Logger.error('You must provide a valid proxy type.')
   }
 
   const localIP = await (await lookup(target.dns)).address
   const serverIP = await (await lookup(target.play)).address
 
   if (localIP !== '127.0.0.1' || serverIP === '127.0.0.1') {
-    return logger.error('Please verify that your loopbacks are correct.')
+    return Logger.error('Please verify that your loopbacks are correct.')
   }
 
   let xml = await fetch(target.servers)

@@ -21,7 +21,7 @@ module.exports = {
     if (direction === Direction.OUT) {
       const rndK = data.split('<k>')[1].split('</k>')[0]
 
-      logger.debug(`Using ${rndK} for random key.`)
+      Logger.debug(`Using ${rndK} for random key.`)
     }
 
     return data
@@ -39,7 +39,7 @@ module.exports = {
     if (serverType === ServerType.LOGIN) {
       const username = data.split('<nick><![CDATA[')[1].split(']]></nick>')[0]
 
-      logger.debug(`${username} is logging in.`)
+      Logger.debug(`${username} is logging in.`)
     }
 
     return data
