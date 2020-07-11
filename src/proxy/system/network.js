@@ -26,7 +26,12 @@ module.exports = class Network {
    */
   static sendFromClient(data, proxy) {
     if (proxy && proxy.writable) {
-      Logger.incoming(data)
+      if (Cipher.active() && Cipher.hasMask(data)) {
+        Logger.incoming(Cipher.decrypt(data))
+      } else {
+        Logger.incoming(data)
+      }
+
       proxy.write(data + '\0')
     }
   }

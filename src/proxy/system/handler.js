@@ -141,7 +141,7 @@ module.exports = class Handler {
    * @returns {Boolean}
    */
   static isEncrypted(data) {
-    return serverType === ProxyType.WORLD && Cipher.key !== '' && data.substring(0, 4) === Cipher.mask
+    return serverType === ProxyType.WORLD && Cipher.active() && Cipher.hasMask(data)
   }
 
   /**
@@ -199,10 +199,14 @@ module.exports = class Handler {
       }
     }
 
-    // Avoids the use of join() on strings (non-filtered XT messages)
+    // This does a whole bunch of things
+    // It handles filtered+unfiltered XT data
+    // It also handles encrypted XT data
     return Array.isArray(data)
       ? ['', 'xt', data.join('%')].join('%')
-      : data
+      : Cipher.active(data) && origin === Direction.IN
+        ? Cipher.encrypt(data)
+        : data
   }
 
   /**
@@ -215,7 +219,7 @@ module.exports = class Handler {
    * @returns {String}
    */
   static handleEncryptedData(data, origin, client, proxy) {
-    return data
+    return this.handleXT(Cipher.decrypt(data), origin, client, proxy)
   }
 
   /**
