@@ -26,6 +26,25 @@ module.exports = class Cipher {
 
   /**
    * @static
+   * Returns whether the Cipher is active or not
+   * @returns {Boolean}
+   */
+  static active() {
+    return this.key !== ''
+  }
+
+  /**
+   * @static
+   * Returns whether the given data has the Cipher mask
+   * @param {String} data
+   * @returns {Boolean}
+   */
+  static hasMask(data) {
+    return data.substring(0, 4) === this.mask
+  }
+
+  /**
+   * @static
    * Encrypts a string
    * @param {String} str
    * @returns {String}
@@ -34,7 +53,9 @@ module.exports = class Cipher {
     let res = ''
 
     for (let i = 0; i < str.length; i++) {
-      res += this.base.indexOf(str.charAt(i)) < 0 ? str.charAt(i) : this.key.charAt(this.base.indexOf(str.charAt(i)))
+      const chr = this.base.indexOf(str.charAt(i))
+
+      res += chr <= 0 ? str.charAt(i) : this.key.charAt(chr)
     }
 
     return res
@@ -50,7 +71,9 @@ module.exports = class Cipher {
     let res = ''
 
     for (let i = 0; i < str.length; i++) {
-      res += this.base.charAt(this.key.indexOf(str.charAt(i)))
+      const chr = this.base.charAt(this.key.indexOf(str.charAt(i)))
+
+      res += chr === '' ? str.charAt(i) : chr
     }
 
     return res
