@@ -11,6 +11,7 @@ const target = require('../config/');
 
 (async () => {
   global.logger = require('./utils/logger')
+  global.Cipher = require('./utils/cipher')
 
   if (!serverType || serverType !== 'login' && serverType !== 'world') {
     return logger.error('You must provide a valid proxy type.')
