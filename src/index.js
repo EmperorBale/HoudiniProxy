@@ -7,13 +7,14 @@ const ProxyLogin = require('./proxy/login')
 const ProxyWorld = require('./proxy/world')
 
 global.serverType = process.argv[2]
+const ProxyType = require('./proxy/enums/ProxyType')
 const target = require('../config/');
 
 (async () => {
   global.Logger = require('./utils/logger')
   global.Cipher = require('./utils/cipher')
 
-  if (!serverType || serverType !== 'login' && serverType !== 'world') {
+  if (!serverType || serverType !== ProxyType.LOGIN && serverType !== ProxyType.WORLD) {
     return Logger.error('You must provide a valid proxy type.')
   }
 
@@ -37,7 +38,7 @@ const target = require('../config/');
   // Set process title to the proxy type
   process.title = serverType
 
-  if (serverType === 'login') {
+  if (serverType === ProxyType.LOGIN) {
     return new ProxyLogin(config)
   }
 

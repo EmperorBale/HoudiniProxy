@@ -2,7 +2,7 @@
 
 const readdir = require('util').promisify(require('fs').readdir)
 const Direction = require('../enums/Direction')
-const ServerType = require('../enums/ServerType')
+const ProxyType = require('../enums/ProxyType')
 
 /**
  * @exports
@@ -141,7 +141,7 @@ module.exports = class Handler {
    * @returns {Boolean}
    */
   static isEncrypted(data) {
-    return serverType === ServerType.WORLD && Cipher.key !== '' && data.substring(0, 4) === Cipher.mask
+    return serverType === ProxyType.WORLD && Cipher.key !== '' && data.substring(0, 4) === Cipher.mask
   }
 
   /**
@@ -227,7 +227,7 @@ module.exports = class Handler {
    * @returns {Promise}
    */
   static handleFromProxy(data, client, proxy) {
-    if (serverType === ServerType.WORLD) {
+    if (serverType === ProxyType.WORLD) {
       data = data.split('\0')
       data.pop()
 
