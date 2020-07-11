@@ -232,7 +232,8 @@ module.exports = class Handler {
       data.pop()
 
       return new Promise((resolve) => {
-        // TCP loves to append data, this undoes it
+        // TCP loves to append data
+        // This performs appendation with (edited) data
         for (let i = 0; i < data.length; i++) {
           if (this.isXML(data[i])) {
             data[i] = this.handleXML(data[i], Direction.OUT, client, proxy)
