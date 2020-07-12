@@ -43,10 +43,11 @@ module.exports = class Handler {
    */
   static xtHandlers = {
     [Direction.IN]: {
-
+      'm#sm': { functionName: 'handleSendMessage' }
     },
     [Direction.OUT]: {
-      'cipher': { functionName: 'handleCipher' }
+      'cipher': { functionName: 'handleCipher' },
+      'lp': { functionName: 'handleLoadPenguin' }
     }
   }
   /**
@@ -57,10 +58,11 @@ module.exports = class Handler {
    */
   static #xtHandlers = {
     [Direction.IN]: {
-
+      'handleSendMessage': 'm#sm'
     },
     [Direction.OUT]: {
-      'handleCipher': 'cipher'
+      'handleCipher': 'cipher',
+      'handleLoadPenguin': 'lp'
     }
   }
 

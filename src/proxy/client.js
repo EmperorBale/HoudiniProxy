@@ -20,5 +20,15 @@ module.exports = class Client extends Socket {
      * @type {ProxyWorld}
      */
     this.server = server
+    /**
+     * The client id
+     * @type {Number}
+     */
+    this.id = 0
+    /**
+     * The client username
+     * @type {String}
+     */
+    this.username = ''
   }
 }
