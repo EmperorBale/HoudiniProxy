@@ -26,4 +26,4 @@ This proxy is specifically in use for NewCP. They use some random shit cipher to
 
 # Copyright
 
-We all don't own Club Penguin, neither do I.
+This is my code, I don't own Club Penguin. Any damage made with this is not my responsibility.
