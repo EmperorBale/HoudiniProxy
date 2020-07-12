@@ -6,7 +6,6 @@
     "start": "node ./src/"
   },
   "dependencies": {
-    "node-fetch": "^2.6.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },

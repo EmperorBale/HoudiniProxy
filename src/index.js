@@ -1,7 +1,7 @@
 'use strict'
 
 const lookup = require('util').promisify(require('dns').lookup)
-const fetch = require('node-fetch')
+const http = require('./utils/http')
 
 const ProxyLogin = require('./proxy/login')
 const ProxyWorld = require('./proxy/world')
@@ -25,8 +25,7 @@ const target = require('../config/');
     return Logger.error('Please verify that your loopbacks are correct.')
   }
 
-  let xml = await fetch(target.servers)
-  xml = await xml.text()
+  let xml = await http.getServers(target.servers)
 
   const config = {
     localIP,
