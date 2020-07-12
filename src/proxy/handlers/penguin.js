@@ -36,7 +36,7 @@ module.exports = {
     const id = parseInt(dataArr[2])
     const message = dataArr[3]
 
-    if (client.id === id && message.charAt() === '/') {
+    if (client.id === id && message.charAt() === '!') {
       // Todo
     }
 
