@@ -126,7 +126,8 @@ module.exports = class ProxyWorld {
 
       this.client = new Client(socket, this)
       this.proxy = new Socket()
-
+	  this.serverBuffer = ""
+	  this.clientBuffer = ""
       this.proxy.connect(this.port, this.serverIP, () => {
         this.proxy.setNoDelay(true)
         this.proxy.setEncoding('utf8')
@@ -136,7 +137,12 @@ module.exports = class ProxyWorld {
 
       // Proxy=>Client events
       this.proxy.on('data', (data) => {
-        this.handler.handleFromProxy(data, this.client, this.proxy).then((modData) => {
+        this.serverBuffer += data
+        if (!this.serverBuffer.endsWith("\0")){
+           return
+        }
+        this.handler.handleFromProxy(this.serverBuffer, this.client, this.proxy).then((modData) => {
+          this.serverBuffer = ""
           this.network.sendFromProxy(modData, this.client)
         })
       })
@@ -145,7 +151,12 @@ module.exports = class ProxyWorld {
 
       // Client=>Proxy events
       this.client.socket.on('data', (data) => {
-        this.handler.handleFromClient(data, this.proxy, this.client).then((modData) => {
+		this.clientBuffer += data
+        if (!this.clientBuffer.endsWith("\0")){
+           return
+        }
+        this.handler.handleFromClient(this.clientBuffer, this.proxy, this.client).then((modData) => {
+		  this.clientBuffer = ""
           this.network.sendFromClient(modData, this.proxy)
         })
       })
