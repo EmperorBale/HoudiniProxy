@@ -188,6 +188,8 @@ module.exports = class Handler {
       const dataArr = data.split('%').splice(2)
       const [subject] = dataArr
 
+      dataArr.pop()
+
       if (this.xtHandlers[direction][subject]) {
         data = this.xtHandlers[direction][subject].callback(dataArr, direction, client, proxy)
       }
@@ -197,7 +199,7 @@ module.exports = class Handler {
     // It handles filtered+unfiltered XT data
     // It also handles encrypted XT data
     return Array.isArray(data)
-      ? ['', 'xt', data.join('%')].join('%')
+      ? ['', 'xt', data.join('%'), ''].join('%')
       : Cipher.active(data) && direction === Direction.IN
         ? Cipher.encrypt(data)
         : data
