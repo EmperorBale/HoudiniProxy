@@ -149,7 +149,7 @@ module.exports = class Handler {
    * Handles XML data
    * @param {String} data
    * @param {String} origin
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
@@ -177,7 +177,7 @@ module.exports = class Handler {
    * Handles XT data
    * @param {String} data
    * @param {String} origin
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
@@ -214,7 +214,7 @@ module.exports = class Handler {
    * Handles encrypted data
    * @param {String} data
    * @param {String} origin
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
@@ -226,7 +226,7 @@ module.exports = class Handler {
    * @static
    * Handles outgoing data from the proxy to the client
    * @param {String} data
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Proxy} proxy
    * @returns {Promise}
    */
@@ -268,7 +268,7 @@ module.exports = class Handler {
    * Handles incoming data from the client to the proxy
    * @param {String} data
    * @param {Net.Socket} proxy
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @returns {Promise}
    */
   static handleFromClient(data, proxy, client) {

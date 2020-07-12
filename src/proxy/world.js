@@ -1,6 +1,7 @@
 'use strict'
 
 const { createServer, Socket } = require('net')
+const Client = require('./client')
 
 /**
  * @exports
@@ -55,7 +56,7 @@ module.exports = class ProxyWorld {
 
     /**
      * The client socket
-     * @type {Net.Socket}
+     * @type {Client}
      */
     this.client = undefined
     /**
@@ -123,7 +124,7 @@ module.exports = class ProxyWorld {
 
       Logger.info(`Client has connected to ${this.worldStr} proxy server.`)
 
-      this.client = socket
+      this.client = new Client(socket, this)
       this.proxy = new Socket()
 
       this.proxy.connect(this.port, this.serverIP, () => {
@@ -143,13 +144,13 @@ module.exports = class ProxyWorld {
       this.proxy.on('error', () => this.close('proxy'))
 
       // Client=>Proxy events
-      this.client.on('data', (data) => {
+      this.client.socket.on('data', (data) => {
         this.handler.handleFromClient(data, this.proxy, this.client).then((modData) => {
           this.network.sendFromClient(modData, this.proxy)
         })
       })
-      this.client.on('close', () => this.close('client'))
-      this.client.on('error', () => this.close('client'))
+      this.client.socket.on('close', () => this.close('client'))
+      this.client.socket.on('error', () => this.close('client'))
     }).listen(this.port, this.localIP, () => Logger.info(`World${this.worldStr} proxy server listening on ${this.localAddr}.`))
   }
 

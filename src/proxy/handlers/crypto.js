@@ -9,7 +9,7 @@ module.exports = {
    * @direction OUT
    * @description Intercept the cipher message
    * @param {Array} data
-   * @param {Net.Socket} client
+   * @param {Client} client
    * @param {Net.Socket} proxy
    * @returns {Array}
    */

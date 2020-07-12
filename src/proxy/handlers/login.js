@@ -9,7 +9,7 @@ module.exports = {
    * @direction OUT
    * @description Intercept the login message
    * @param {Array} data
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {Array}
    */

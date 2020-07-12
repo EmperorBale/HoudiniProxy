@@ -13,7 +13,7 @@ module.exports = {
    * @description Intercept the rndK message
    * @param {String} data
    * @param {String} direction
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
@@ -31,7 +31,7 @@ module.exports = {
    * @direction IN
    * @description Intercept the login message
    * @param {String} data
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */

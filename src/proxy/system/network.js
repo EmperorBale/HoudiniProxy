@@ -9,7 +9,7 @@ module.exports = class Network {
    * @static
    * Sends outgoing data from the proxy to the client
    * @param {String} data
-   * @param {Net.Socket} client
+   * @param {Net.Socket|Client} client
    */
   static sendFromProxy(data, client) {
     if (client && client.writable) {
