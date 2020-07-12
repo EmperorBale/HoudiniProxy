@@ -182,27 +182,30 @@ module.exports = class Handler {
    * @returns {String}
    */
   static handleXT(data, direction, client, proxy) {
-    if (direction === Direction.IN) {
-      // Todo
-    } else if (direction === Direction.OUT) {
-      const dataArr = data.split('%').splice(2)
-      const [subject] = dataArr
+    const dataArr = data.split('%').splice(direction === Direction.IN ? 3 : 2)
+    const [subject] = dataArr
 
-      dataArr.pop()
+    dataArr.pop()
 
-      if (this.xtHandlers[direction][subject]) {
-        data = this.xtHandlers[direction][subject].callback(dataArr, direction, client, proxy)
-      }
+    if (this.xtHandlers[direction][subject]) {
+      data = this.xtHandlers[direction][subject].callback(dataArr, direction, client, proxy)
     }
 
-    // This does a whole bunch of things
-    // It handles filtered+unfiltered XT data
-    // It also handles encrypted XT data
-    return Array.isArray(data)
-      ? ['', 'xt', data.join('%'), ''].join('%')
-      : Cipher.active(data) && direction === Direction.IN
-        ? Cipher.encrypt(data)
-        : data
+    // Reform filtered data
+    if (Array.isArray(data)) {
+      direction === Direction.IN
+        ? data.unshift(['', 'xt', 's'].join('%'))
+        : data.unshift(['', 'xt'].join('%'))
+      data.push('')
+      data = data.join('%')
+    }
+
+    // Recipher data when needed
+    if (Cipher.active(data) && direction === Direction.IN) {
+      data = Cipher.encrypt(data)
+    }
+
+    return data
   }
 
   /**
