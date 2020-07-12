@@ -18,7 +18,7 @@ This proxy is specifically in use for NewCP. They use some random shit cipher to
 
 - [Current Node.js](https://nodejs.org/en/download/current/)
 - Edit `/config/index.js` to your target
-- `127.0.0.1 newcp.net` (example) in hosts (Open Notepad as **admin** and go to `C:\Windows\System32\drivers\etc\hosts`)
+- `127.0.0.1 newcp.net` (example) in hosts (Open Notepad as **admin** and open file `C:\Windows\System32\drivers\etc\hosts`)
 - `npm install` for dependencies
 - `npm start login` to start the login proxy
 - `npm start world` to start the world proxies
