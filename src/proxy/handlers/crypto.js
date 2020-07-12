@@ -5,8 +5,7 @@
  */
 module.exports = {
   /**
-   * @name cipher
-   * @description Intercept the cipher message
+   * Intercept the cipher message
    * @param {Array} data
    * @param {String} direction
    * @param {Client} client
