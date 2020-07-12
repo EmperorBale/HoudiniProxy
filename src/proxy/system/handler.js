@@ -15,14 +15,7 @@ module.exports = class Handler {
    * @type {Object}
    */
   static xmlHandlers = {
-    rndK: {
-      functionName: 'handleRandomKey',
-      direction: Direction.BOTH
-    },
-    login: {
-      functionName: 'handleXMLLogin',
-      direction: Direction.IN
-    }
+
   }
   /**
    * @static
@@ -31,8 +24,7 @@ module.exports = class Handler {
    * @type {Object}
    */
   static #xmlHandlers = {
-    handleRandomKey: 'rndK',
-    handleXMLLogin: 'login'
+
   }
   /**
    * @static
@@ -40,10 +32,6 @@ module.exports = class Handler {
    * @type {Object}
    */
   static xtHandlers = {
-    l: {
-      functionName: 'handleXTLogin',
-      direction: Direction.OUT
-    },
     cipher: {
       functionName: 'handleCipher',
       direction: Direction.OUT
@@ -56,7 +44,6 @@ module.exports = class Handler {
    * @type {Object}
    */
   static #xtHandlers = {
-    handleXTLogin: 'l',
     handleCipher: 'cipher'
   }
 
