@@ -15,7 +15,12 @@ module.exports = class Handler {
    * @type {Object}
    */
   static xmlHandlers = {
+    [Direction.IN]: {
 
+    },
+    [Direction.OUT]: {
+
+    }
   }
   /**
    * @static
@@ -24,7 +29,12 @@ module.exports = class Handler {
    * @type {Object}
    */
   static #xmlHandlers = {
+    [Direction.IN]: {
 
+    },
+    [Direction.OUT]: {
+
+    }
   }
   /**
    * @static
@@ -32,9 +42,11 @@ module.exports = class Handler {
    * @type {Object}
    */
   static xtHandlers = {
-    cipher: {
-      functionName: 'handleCipher',
-      direction: Direction.OUT
+    [Direction.IN]: {
+
+    },
+    [Direction.OUT]: {
+      'cipher': { functionName: 'handleCipher' }
     }
   }
   /**
@@ -44,7 +56,12 @@ module.exports = class Handler {
    * @type {Object}
    */
   static #xtHandlers = {
-    handleCipher: 'cipher'
+    [Direction.IN]: {
+
+    },
+    [Direction.OUT]: {
+      'handleCipher': 'cipher'
+    }
   }
 
   /**
@@ -65,36 +82,38 @@ module.exports = class Handler {
         for (let i = 0; i < functionNames.length; i++) {
           const functionName = functionNames[i]
 
-          if (this.#xmlHandlers[functionName]) {
-            const action = this.#xmlHandlers[functionName]
+          for (let direction in Direction) {
+            direction = Direction[direction]
 
-            if (this.xmlHandlers[action]) {
-              const xml = this.xmlHandlers[action]
+            if (this.#xmlHandlers[direction][functionName]) {
+              const action = this.#xmlHandlers[direction][functionName]
 
-              if (xml.functionName === functionName) {
-                xml.callback = handler[functionName]
+              if (this.xmlHandlers[direction][action]) {
+                const xml = this.xmlHandlers[direction][action]
+
+                if (xml.functionName === functionName) {
+                  xml.callback = handler[functionName]
+                } else {
+                  throw new Error(`Unmatching XML function name: '${functionName}'-'${xml.functionName}'.`)
+                }
               } else {
-                throw new Error(`Unmatching XML function name: '${functionName}'-'${xml.functionName}'.`)
+                throw new Error(`Unknown XML action: '${action}'.`)
               }
-            } else {
-              throw new Error(`Unknown XML action: '${action}'.`)
-            }
-          } else if (this.#xtHandlers[functionName]) {
-            const subject = this.#xtHandlers[functionName]
+            } else if (this.#xtHandlers[direction][functionName]) {
+              const subject = this.#xtHandlers[direction][functionName]
 
-            if (this.xtHandlers[subject]) {
-              const xt = this.xtHandlers[subject]
+              if (this.xtHandlers[direction][subject]) {
+                const xt = this.xtHandlers[direction][subject]
 
-              if (xt.functionName === functionName) {
-                xt.callback = handler[functionName]
+                if (xt.functionName === functionName) {
+                  xt.callback = handler[functionName]
+                } else {
+                  throw new Error(`Unmatching XT function name: '${functionName}'-'${xt.functionName}'.`)
+                }
               } else {
-                throw new Error(`Unmatching XT function name: '${functionName}'-'${xt.functionName}'.`)
+                throw new Error(`Unknown XT subject: '${subject}'.`)
               }
-            } else {
-              throw new Error(`Unknown XT subject: '${subject}'.`)
             }
-          } else {
-            throw new Error(`Unknown function name: '${functionName}'.`)
           }
         }
       }
@@ -135,25 +154,19 @@ module.exports = class Handler {
    * @static
    * Handles XML data
    * @param {String} data
-   * @param {String} origin
+   * @param {String} direction
    * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  static handleXML(data, origin, client, proxy) {
+  static handleXML(data, direction, client, proxy) {
     // This is so epic!
-    const action = origin === Direction.IN
+    const action = direction === Direction.IN
       ? data.split(`='`)[2].split(`'`)[0]
       : data.split('="')[2].split('"')[0]
 
-    if (this.xmlHandlers[action]) {
-      const { direction, callback } = this.xmlHandlers[action]
-
-      if (direction === origin || direction === Direction.BOTH) {
-        data = direction === Direction.BOTH
-          ? callback(data, origin, client, proxy)
-          : callback(data, client, proxy)
-      }
+    if (this.xmlHandlers[direction][action]) {
+      data = this.xmlHandlers[direction][action].callback(data, direction, client, proxy)
     }
 
     return data
@@ -163,26 +176,20 @@ module.exports = class Handler {
    * @static
    * Handles XT data
    * @param {String} data
-   * @param {String} origin
+   * @param {String} direction
    * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  static handleXT(data, origin, client, proxy) {
-    if (origin === Direction.IN) {
+  static handleXT(data, direction, client, proxy) {
+    if (direction === Direction.IN) {
       // Todo
-    } else if (origin === Direction.OUT) {
+    } else if (direction === Direction.OUT) {
       const dataArr = data.split('%').splice(2)
       const [subject] = dataArr
 
-      if (this.xtHandlers[subject]) {
-        const { direction, callback } = this.xtHandlers[subject]
-
-        if (direction === origin || direction === Direction.BOTH) {
-          data = direction === Direction.BOTH
-            ? callback(dataArr, origin, client, proxy)
-            : callback(dataArr, client, proxy)
-        }
+      if (this.xtHandlers[direction][subject]) {
+        data = this.xtHandlers[direction][subject].callback(dataArr, direction, client, proxy)
       }
     }
 
@@ -191,7 +198,7 @@ module.exports = class Handler {
     // It also handles encrypted XT data
     return Array.isArray(data)
       ? ['', 'xt', data.join('%')].join('%')
-      : Cipher.active(data) && origin === Direction.IN
+      : Cipher.active(data) && direction === Direction.IN
         ? Cipher.encrypt(data)
         : data
   }
@@ -200,13 +207,13 @@ module.exports = class Handler {
    * @static
    * Handles encrypted data
    * @param {String} data
-   * @param {String} origin
+   * @param {String} direction
    * @param {Net.Socket|Client} client
    * @param {Net.Socket} proxy
    * @returns {String}
    */
-  static handleEncryptedData(data, origin, client, proxy) {
-    return this.handleXT(Cipher.decrypt(data), origin, client, proxy)
+  static handleEncryptedData(data, direction, client, proxy) {
+    return this.handleXT(Cipher.decrypt(data), direction, client, proxy)
   }
 
   /**
@@ -214,7 +221,7 @@ module.exports = class Handler {
    * Handles outgoing data from the proxy to the client
    * @param {String} data
    * @param {Net.Socket|Client} client
-   * @param {Net.Proxy} proxy
+   * @param {Net.Socket} proxy
    * @returns {Promise}
    */
   static handleFromProxy(data, client, proxy) {

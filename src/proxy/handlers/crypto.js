@@ -6,14 +6,14 @@
 module.exports = {
   /**
    * @name cipher
-   * @direction OUT
    * @description Intercept the cipher message
    * @param {Array} data
+   * @param {String} direction
    * @param {Client} client
    * @param {Net.Socket} proxy
    * @returns {Array}
    */
-  handleCipher: (dataArr, client, proxy) => {
+  handleCipher: (dataArr, direction, client, proxy) => {
     Cipher.key = dataArr[2]
     Cipher.mask = Cipher.encrypt('%xt%')
 

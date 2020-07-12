@@ -3,4 +3,4 @@
 /**
  * @exports
  */
-module.exports = Object.freeze({ IN: 'incoming', OUT: 'outgoing', BOTH: 'inout' })
+module.exports = Object.freeze({ IN: 'incoming', OUT: 'outgoing' })
