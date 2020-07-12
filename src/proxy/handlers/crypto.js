@@ -5,7 +5,7 @@
  */
 module.exports = {
   /**
-   * Intercept the cipher message
+   * Sets up the cipher class
    * @param {Array} data
    * @param {String} direction
    * @param {Client} client
